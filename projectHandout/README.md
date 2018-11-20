@@ -188,3 +188,19 @@ Our Slack group. Others may be dealing with a similar issue, although
 they are investigating a different research question. Do not be too
 jealous of your code, which is only a tool and not the ultimate goal of
 the project. Sharing your code is a good way to receive feedback on it.
+
+## Final checklist
+
+  - Introduce the project using a README file containting the research
+    question and a 1-2 paragraph description of what you did. Add images
+    if you think they help clarifying.
+
+  - Make sure that the code is reproducible - e.g., use the `here`
+    package for filepaths, and restart your R session to male sure there
+    are no dependencies to the elements in your environemnt. Unless
+    strickly necessary, I would prefer that you save and load the data
+    you retrieve from the APIs as R objects (e.g., tibbles). You may
+    still keep the script for querying the API in a separate script.
+
+  - Arrange your scripts and output files meaningfully in your project
+    folder (e.g., dataset and images in separate subfolders)
