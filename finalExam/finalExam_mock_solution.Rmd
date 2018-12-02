@@ -1,0 +1,346 @@
+---
+title: "Final Exam"
+author: "Name:"
+output:
+  pdf_document: default
+editor_options:
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = F, fig.width = 4, fig.height = 3)
+```
+
+\vspace{30pt}
+
+For each question, change the code to produce the **correct** output. Each question contains only one mistake, but which may be repeated (e.g., using the wrong function multiple times)
+
+The following libraries are loaded in the global environment when running each snippet of code:
+
+```{r}
+library(tidyverse)
+library(fivethirtyeight)
+```
+
+\vspace{30pt}
+
+\newpage
+
+## Data Visualization
+
+1.
+
+\vspace{30pt}
+
+```{r, error=TRUE}
+ggplot(data = steak_survey) +
+  geom_col(aes(x = region)) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+**correct:**
+
+```{r, echo=FALSE}
+#correct
+ggplot(data = steak_survey) +
+  geom_bar(aes(x = region)) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+
+\newpage
+
+2. Count of subjects in each level of steak preparation preference by gender (using variable `female`) 
+
+\vspace{30pt}
+
+```{r}
+ggplot(data = steak_survey) +
+  geom_bar(aes(x = steak_prep, fill = 'darkblue')) +
+  facet_wrap(~ lottery_a) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+\vspace{30pt}
+**correct:**
+
+```{r, echo=FALSE}
+#correct
+ggplot(data = steak_survey) +
+  geom_bar(aes(x = steak_prep), fill = 'darkblue') +
+  facet_wrap(~ lottery_a) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+\vspace{30pt}
+
+\newpage
+
+3. Chart of the correlation between `insurance_premiums` and `losses`
+
+\vspace{30pt}
+
+```{r, error=TRUE}
+ggplot(bad_drivers) +
+  geom_smooth(aes(insurance_premiums, losses), method = 'lm') +
+  geom_point()
+```
+
+\vspace{30pt}
+**correct:**
+
+```{r, echo=FALSE}
+ggplot(bad_drivers, aes(insurance_premiums, losses)) +
+  geom_smooth(method = 'lm') +
+  geom_point()
+```
+
+\newpage
+
+# Data Analysis
+
+4. Total graduates by major_category (first 5 rows)
+
+```{r, }
+college_recent_grads %>% 
+  group_by(major_category) %>% 
+  summarise(Total = sum(total)) %>% 
+  slice(1:5)
+```
+
+\vspace{30pt}
+**correct:**
+
+```{r, echo=FALSE}
+#correct
+college_recent_grads %>% 
+  filter(!is.na(total)) %>% 
+  group_by(major_category) %>% 
+  summarise(Total = sum(total)) %>% 
+  slice(1:5)
+```
+
+\vspace{30pt}
+
+5. Total share of women by major_category (first 5 rows)
+
+```{r, error=TRUE}
+college_recent_grads %>% 
+  group_by(major_category) %>% 
+  summarise(percent = n(women)/n(total)) %>% 
+  slice(1:5)
+```
+
+\vspace{30pt}
+**correct:**
+
+```{r, echo=FALSE}
+college_recent_grads %>% 
+  group_by(major_category) %>% 
+  summarise(percent = sum(women)/sum(total)) %>% 
+  slice(1:5)
+```
+
+\newpage
+
+6. Extract the row for the major with the highest share of females
+
+\vspace{30pt}
+
+```{r, error=TRUE}
+college_recent_grads %>% 
+  filter(max(sharewomen, na.rm = T)) %>% 
+  select(major_category:sharewomen)
+```
+
+\vspace{30pt}
+**correct:**
+
+```{r, echo=FALSE}
+college_recent_grads %>% 
+  filter(sharewomen == max(sharewomen, na.rm = T)) %>% 
+  select(major_category:sharewomen)
+```
+
+\vspace{30pt}
+
+7. Count of major_category for Engineering and Business only.
+
+\vspace{30pt}
+```{r, error=TRUE}
+college_recent_grads %>% 
+  filter(major_category == 'Engineering', major_category == 'Business') %>% 
+  count(major_category) 
+```
+
+\vspace{30pt}
+**correct:**
+
+```{r, echo=FALSE}
+college_recent_grads %>% 
+  filter(major_category == 'Engineering' | major_category == 'Business'  ) %>% 
+  count(major_category) 
+```
+
+\newpage
+
+
+8. Transform `shareswomen` in percent. Print only the first row and keep only column "sharewoman"
+
+\vspace{30pt}
+
+```{r, error=TRUE}
+college_recent_grads %>% 
+  slice(1) %>% 
+  select(sharewomen) %>% 
+  filter(sharewomen = scales::percent(sharewomen))
+```
+
+\vspace{30pt}
+**correct:**
+
+```{r, echo=FALSE}
+college_recent_grads %>% 
+  slice(1) %>% 
+  select(sharewomen) %>% 
+  mutate(sharewomen = scales::percent(sharewomen))
+```
+ 
+\vspace{30pt}
+
+9. Output a vector of means
+
+```{r, error=TRUE}
+map_dbl(mean, mtcars)
+```
+
+**correct:**
+
+```{r, echo=FALSE}
+map_dbl(mtcars, mean)
+```
+
+\newpage 
+
+# Functions
+
+10. Calculate the mean for each column of a dataframe containing numeric values:
+
+```{r, error=TRUE}
+columnwiseMean <- function(df) {
+  if (is.data.frame(df)) stop('`df` is not a dataframe')
+  map(df, mean)
+} 
+columnwiseMean(cars)
+```
+
+\vspace{30pt}
+**correct:**
+
+
+```{r, echo= FALSE}
+columnwiseMean <- function(df) {
+  #either delete the if-statement or  !is.data.frame()
+  map(df, mean)
+} 
+columnwiseMean(cars)
+```
+
+
+11. Calculate a percentage given a total amount and a fraction of the total observations
+
+
+```{r, error=T}
+prc <- function(total, obs, call. = FALSE) {
+          if (!is.double(total) | !is.double(obs)) {
+            stop('`total` and `obs` must be of type numeric')  
+            }
+         (obs / total) * 100
+         x <- paste0(x, '%')
+         x
+}
+prc(400, 20)
+```
+
+\vspace{30pt}
+**correct:**
+
+```{r, echo=FALSE}
+prc <- function(total, obs, call. = FALSE) {
+          if (!is.double(total) | !is.double(obs)) {
+            stop('`total` and `obs` must be of type numeric')  
+            }
+         x <- (obs / total) * 100
+         x <- paste0(x, '%')
+         x
+}
+```
+```{r}
+prc(400, 20)
+```
+
+
+
+\newpage
+
+#General R knowledge (TRUE/FALSE)
+
+
+  - `==` performs an assignment operation : F
+ 
+  - a `NA` is equivalent to `0` : F
+ 
+  - In dataframes, each column must have the same number of rows/cells: T
+ 
+  - The code snippets below retrieve the same output: T (vectorization)
+ 
+```{r, eval=FALSE}
+c(1, 4, 3) + 1           # 1.
+
+c(1, 4, 3) + c(1, 1, 1)  # 2. 
+```
+ 
+
+  - The code snippets below retrieve the same output when `x` is the same: F
+ 
+```{r, eval=FALSE}
+mean(is.na(x))             # 1. 
+
+x %>% mean() %>% is.na(x)  # 2.
+```
+ 
+
+  - The code snippets below retrieve the same output when `x` is the same: T
+ 
+```{r, eval=FALSE}
+bad_drivers %>% filter(num_drivers > x)    # 1. 
+
+bad_drivers %>% filter(!(num_drivers <= x))  # 2.
+```
+
+
+
+  - The code snippets below retrieve the same output: F
+ 
+```{r, eval=FALSE}
+steak_survey %>% count(lottery_a, smoke)          # 1. 
+
+steak_survey %>% group_by(lottery_a, smoke) %>%   # 2.
+  summarise(sum())
+```
+
+
+  - `filter` is for manipulating rows, while `slice` is for manipulating variables: F
+  
+
+  - the output from `summarise()` has as many rows as the grouping levels: T
+
+  
+  - datasets being plotted in `ggplot()` should be "tidy" (or in longitudinal form): T
+  
+  
+  - in ggplot, we can map multiple variables to the same aesthetic: F
+  
+  
+  - every time we query a database using `dplyr` the output is automatically collected locally on our machine: F
+
