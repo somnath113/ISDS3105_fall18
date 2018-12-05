@@ -50,14 +50,14 @@ ggplot(data = steak_survey) +
 
 \newpage
 
-2. Count of subjects in each level of steak preparation preference by gender (using variable `female`) 
+2. Count the subjects in each level of steak preparation preference. Change the fill color to `darkblue`.
 
 \vspace{30pt}
 
 ```{r}
 ggplot(data = steak_survey) +
   geom_bar(aes(x = steak_prep, fill = 'darkblue')) +
-  facet_wrap(~ lottery_a) +
+  facet_wrap(~ female) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
 
@@ -68,7 +68,7 @@ ggplot(data = steak_survey) +
 #correct
 ggplot(data = steak_survey) +
   geom_bar(aes(x = steak_prep), fill = 'darkblue') +
-  facet_wrap(~ lottery_a) +
+  facet_wrap(~ female) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
 
