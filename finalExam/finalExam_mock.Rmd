@@ -41,7 +41,7 @@ ggplot(data = steak_survey) +
 
 \newpage
 
-2. Count of subjects in each level of steak preparation preference by gender (using variable `female`) 
+2. Count of subjects in each level of steak preparation preference facetting by whether they played the lottery. Change the fill color of the bars to `darkblue`.
 
 \vspace{30pt}
 
