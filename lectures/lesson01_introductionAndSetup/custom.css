@@ -1,0 +1,19 @@
+/* 
+color palette:
+ purple #461D7C 
+ gold   #FDD023
+*/
+
+body {
+background-color: #FDD023;
+}
+
+.slidecontent {
+  padding-top: 400px;
+}
+
+.reveal section img {
+  max-width: 200px;
+  background-color: #FDD023;
+  box-shadow: none;
+}
