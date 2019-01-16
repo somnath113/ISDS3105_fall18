@@ -1,0 +1,39 @@
+---
+title: "`r params$region`"
+output: html_document
+params:
+  steak: ''
+  region: 'Mountain'
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r message=FALSE, echo=FALSE}
+library(tidyverse)
+library(fivethirtyeight)
+library(knitr)
+options(knitr.kable.NA = '-')  #changes NA into `-`
+dt <- steak_survey %>% 
+  filter(region == params$region) 
+dt %>% 
+  gather(behavior, value, lottery_a:cheated) %>% 
+  group_by(behavior) %>% summarise(tot = sum(value)) %>% kable(caption = "Behaviors of the surveyees")
+```
+
+
+```{r echo=FALSE}
+nbars <- length(na.omit(unique(dt$steak_prep)))
+cls <- c(RColorBrewer::brewer.pal(n = nbars, 'Oranges'), "#4b4d51")
+if (params$steak) {
+  dt <- dt %>% drop_na(steak_prep) 
+  cls <- c(RColorBrewer::brewer.pal(n = nbars, 'Oranges'))
+           }
+ggplot(dt) +
+  geom_bar(aes(x = steak_prep), fill = cls ) +
+  ggtitle(paste('Steak preferences in the', params$region, 'region'))
+```

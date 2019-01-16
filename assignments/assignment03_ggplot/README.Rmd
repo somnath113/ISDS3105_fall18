@@ -33,7 +33,6 @@ For this assignment we are using a dataset from the website [Fivethirtyeight](ht
    - insurance_premiums and perc_speeding
    - insurance_premiums and perc_not_distracted
    
-   
 10. Mute the code for both charts and add a title to both. Knit to html.
    
    

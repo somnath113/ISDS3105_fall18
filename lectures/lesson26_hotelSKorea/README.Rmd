@@ -1,0 +1,58 @@
+---
+title: "Hotel South Korea"
+output: github_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = F)
+```
+
+
+```{r}
+library(tidyverse)
+library(here)
+load(here('lectures', 'lesson24_hotelSKorea', 'economicPerformance.rda'))
+```
+
+
+```{r}
+dt <- map_df(list(hualien, kaohsiung, taichung, taipei, tauhsiumiao), mutate_all, as.character)
+```
+
+
+Transform datatypes as needed
+
+```{r}
+dt <- dt %>% as_tibble() %>%  
+          mutate(Month = lubridate::ymd(Month, truncated = 1)) %>% 
+          mutate_at(vars(-hotel, -Month, -location), as.numeric) 
+```
+
+
+
+Relationship between occupancy rate and Total Revenue
+
+```{r}
+dt %>% 
+  mutate(`RevPAR` = `Total Revenue`/`No. of Rooms`) %>% 
+  filter(!is.infinite(RevPAR)) -> dt1
+  ggplot(aes(x = `Occupancy Rate`, y = RevPAR)) + 
+  geom_point(alpha = .1) +
+  geom_smooth(method = lm)
+```
+
+
+Fit the regression model
+
+```{r}
+library(infer)
+library(moderndive)
+lm(RevPAR ~ `Occupancy Rate`, data = dt1 ) %>% 
+  get_regression_table(digits = 2)
+```
+
+
+
+

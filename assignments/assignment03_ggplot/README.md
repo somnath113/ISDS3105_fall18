@@ -25,4 +25,4 @@ For this assignment we are using a dataset from the website [Fivethirtyeight](ht
 -   insurance\_premiums and perc\_speeding
 -   insurance\_premiums and perc\_not\_distracted
 
-1.  Mute the code for both charts and add a title to both. Knit to html.
+0. Mute the code for both charts and add a title to both. Knit to html.

@@ -1,0 +1,95 @@
+Authoring PDF reports
+================
+
+Knitting RMarkdown file may become challenging, especially when knitting to PDF. So far, we have learned how to write statics and dynamic content without caring too much about how to present the content more appealingly. There are some packages that with little effort allows improving a lot the look of dynamic R code. In particular, with [knitr](https://yihui.name/knitr/) and [kableExtra](https://haozhu233.github.io/kableExtra/awesome_table_in_html.html) you can can transform the the output in LaTex tables. If you are familiar with LaTex, you can actually use it in RMarkdown if you wish ([documentation](https://rmarkdown.rstudio.com/pdf_document_format.html), [RE:How to include LaTeX package in R Markdown?](https://tex.stackexchange.com/questions/171711/how-to-include-latex-package-in-r-markdown)).
+
+``` r
+#note that the suppress message = F is necessary because standard LaTeX can't 
+#handle Unicode characters that appear in the message when laoding tidyverse
+library(tidyverse)
+library(fivethirtyeight)
+```
+
+So far, we have only been knitting plain console output to PDF, but the function `knitr::kable()` allows to convert console output in  styled output:
+
+``` r
+dt <- steak_survey %>% count(steak_prep) #a sample table to render
+library(knitr)
+options(knitr.kable.NA = '-') #this subsistitue a dafualt symbol to any NA
+kable(dt, caption = 'How Americans like their steak')
+```
+
+| steak\_prep |    n|
+|:------------|----:|
+| Rare        |   23|
+| Medium rare |  166|
+| Medium      |  132|
+| Medium Well |   75|
+| Well        |   36|
+| -           |  118|
+
+But we customize the layout a lot more using the `kableExtra` package:
+
+``` r
+library(kableExtra)
+kable(dt, format = "latex",  caption = 'How Americans like their steak', booktabs = T) %>% 
+  #need booktabs T to make them look latex-styled
+  kable_styling(latex_options = c("striped", "HOLD_position")) 
+```
+
+We can even change the cells colors:
+
+``` r
+#generate a color palette
+pal1 <- c(spec_color(1:nrow(dt), begin = .9, end = 1, option = "A", direction = -1))
+pal1[length(pal1)] <- '#ffffff'
+dt <- steak_survey %>% count(steak_prep) #a sample table to render
+dt %>%
+  mutate(steak_prep = case_when(is.na(steak_prep) ~ '-',
+                          T ~ as.character(steak_prep))) %>% 
+  rename(`Steak Preparation` = steak_prep, Tot. = n) %>% # the character _ conflicts with LaTeX code
+  mutate(`Steak Preparation` = cell_spec(`Steak Preparation`, format = 'latex', align = 'l', background = pal1)) %>%
+  mutate(Tot. = cell_spec(Tot., format = 'latex', align = 'r', background = pal1)) %>%
+  kable(format = "latex",  escape = F, caption = 'How Americans like their steak', booktabs = T) %>%
+  kable_styling(latex_options = c("striped", "HOLD_position"))
+```
+
+To unname a variable and simulate a "rowname" look, you can rename the variable into blank string:
+
+``` r
+steak_survey %>% gather('behavior', 'value',smoke:cheated) %>% 
+  group_by(educ, behavior) %>% summarise(tot = sum(value)) %>% 
+  spread(behavior, tot) %>% 
+  filter(!is.na(educ)) %>% 
+  rename(` `=educ) %>%     #note the backticks
+  kable(format = "latex",  escape = F, caption = 'How Americans like their steak', booktabs = T) %>% 
+  kable_styling(latex_options = c("HOLD_position"))
+```
+
+``` r
+select(steak_survey, lottery_a:educ) %>% 
+  slice(1:5) %>% 
+kable(format = "latex", booktabs = T, caption = 'A sample of 5 observations') %>%
+kable_styling(latex_options = c("striped", "scale_down", 'HOLD_position')) %>%
+add_header_above(c("Behaviors" = 9, 'Demographics' = 4))
+```
+
+To knit the output to a new page with horizontal orientation you can use `landscape()`
+
+``` r
+select(steak_survey, lottery_a:educ) %>% 
+  slice(1:5) %>% 
+kable(format = "latex", booktabs = T, caption = 'A sample of 5 observations') %>%
+add_header_above(c("Behaviors" = 9, 'Demographics' = 4)) %>% 
+  landscape(margin = c('.5cm')) %>% 
+kable_styling(latex_options = c("striped", "HOLD_position"))
+```
+
+Exercise
+========
+
+Render to pdf a table of `fivethirtyeight::bad_drivers`. Use `kableExtra` to change the color of the row for Louisiana to a color of your choice.
+
+``` r
+#mutate(Tot. = cell_spec(Tot., format = 'latex', align = 'r', background = pal1))
+```

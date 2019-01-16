@@ -1,0 +1,66 @@
+---
+title: "Terrorism in Europe"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: columns
+    vertical_layout: fill
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+library(flexdashboard)
+```
+
+```{r}
+dt <- read_csv(file = 'https://raw.githubusercontent.com/fivethirtyeight/data/master/terrorism/eu_terrorism_fatalities_by_country.csv')
+dtYear <- tidyr::gather(dt, 'state', 'casualties', - iyear)
+
+dt <- dtYear %>% 
+  group_by(state) %>% summarise(total = sum(casualties))
+```
+
+
+Column {data-width=650}
+-----------------------------------------------------------------------
+
+### Europe
+
+```{r}
+dt %>% 
+  ggplot(aes(x = state, y = total)) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  geom_col()
+```
+
+Column {data-width=350}
+-----------------------------------------------------------------------
+
+### State 1
+
+```{r}
+statePlot <- function(data, country){
+  filter(dtYear, state == country) %>% 
+ggplot(aes(x = iyear, y = casualties)) +
+  scale_x_continuous(name = 'year') + 
+  geom_line()
+
+}
+statePlot(dtYear, 'Belgium')
+
+filter(dtYear, state == 'United Kingdom') %>% 
+ggplot(aes(x = iyear, y = casualties)) +
+  scale_x_continuous(name = 'year') + 
+  geom_line()
+```
+
+### State 2
+
+```{r}
+filter(dtYear, state == 'Belgium') %>% 
+ggplot(aes(x = iyear, y = casualties)) +
+  scale_x_continuous(name = 'year') +
+  geom_line()
+```
+

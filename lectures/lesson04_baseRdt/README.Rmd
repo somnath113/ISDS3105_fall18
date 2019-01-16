@@ -1,0 +1,152 @@
+---
+title: "Lesson 3: Data frames and tibbles"
+output: github_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, collapse = T)
+```
+
+
+```{r, message=FALSE}
+if (!require(tidyverse)) {install.packages('tidyverse')}
+library(tidyverse)
+```
+
+
+# Data frame
+
+To create a data frame, use the function `data.frame`:
+
+```{r}
+#data from https://www.statista.com/statistics/804398/us-iphone-sales-by-model/
+iphoneSales <- data.frame(
+                  time = c("Sep 2014", "Sep 2015", "Sep 2016", "Dec 2016", "Sep 2017", "Dec 2017", "Jun 2018"), 
+                  iPhone4S = c(9, NA, NA, NA, NA, NA, NA), 
+                  iPhone5C = c(15.5, 5, NA, NA, NA, NA, NA), 
+                  iPhone5S = c(30, 19, NA, NA, NA, NA, NA), 
+                  iPhoneSE = c(NA, NA, 9.5, 6, 11, 7, 8), 
+                  iPhone6 = c(33, 33, 5, NA, NA, NA, NA), 
+                  iPhone6Plus = c(12.5, 19, 7, NA, NA, NA, NA), 
+                  iPhone6S = c(NA, 16, 19, 11, 10, 6, 8), 
+                  iPhone6SPlus = c(NA, 8, 12.5, 10, 4.5, 2, 3), 
+                  iPhone7 = c(NA, NA, 31, 40, 28.5, 13, 16), 
+                  iPhone7Plus = c(NA, NA, 16, 32.1, 29.5, 11, 11), 
+                  iPhone8 = c(NA, NA, NA, NA, 6, 24, 13), 
+                  iPhone8Plus = c(NA, NA, NA, NA, 10.5, 17, 24), 
+                  iPhoneX = c(NA, NA, NA, NA, NA, 20.1, 17))
+#note how "time" becomes a factor-- more details at http://r4ds.had.co.nz/factors.html#creating-factors
+```
+
+
+Dataframes are a special case of a list, where each element is a vector of the same length but possibly different type. For instance:
+
+```{r}
+str(iphoneSales)
+class(iphoneSales)
+typeof(iphoneSales)
+```
+
+
+Indexing works similarly to vectors, but note the difference between _extracting_ and _selecting_:
+
+```{r}
+#selecting
+iphoneSales['iPhone4S']
+iphoneSales[2]
+#extracting
+iphoneSales[['iPhone4S']]
+iphoneSales[['iPhone4S']][1]
+iphoneSales[,2]
+iphoneSales$iPhone4S
+```
+
+
+```{r}
+#For readability, show the code but hide the output of this chucnk once you tested the solutions
+# use dataframe[row,col] to
+
+#extract the first two elements of column "IPhone6s"
+
+#subset iphoneSales to a dataframe with only time, iPhone5C, IPhoneX
+
+#keep only the rows where the sales for iPhoneSE are higher than 7 AND are not NA (AND = &, OR = |, NOT = !)
+
+#Use %in% to keep only the rows for c("Sep 2014", "Sep 2015", "Sep 2018")
+
+#calculate the mean() of the IPhone7 sold 
+
+#use inline code to print the mean of the iphone sold in Jun 2018
+
+```
+
+
+However, the `tidyverse` is best suited for using rectangular data structures called `tibbles` instead of data frames. To convert a `data.frame` into a `tibble`:
+
+```{r}
+as_tibble(iphoneSales)
+class(as_tibble(iphoneSales))
+typeof(as_tibble(iphoneSales))
+```
+
+Because tibbles are also dataframes, you can use indexing as you would do on a `data.frame`. However, a crucial difference between tibbles and dataframe is that tibbles allow to have column-list elements while dataframes allow only column-vectors:
+
+```{r}
+iphoneSales_tibble <- tibble(year = c(2017, 2018), 
+                    iphones = list(
+                      c(iphone7 = 13, iphone7plus = 11), 
+                      c(iphone7 = 16, iphone7plus = 11))
+                    )
+iphoneSales_tibble
+
+iphoneSales_df <- data.frame(year = c(2017, 2018), 
+       iphones = list(list(iphone7 = 13, iphone7plus = 11), list(iphone7 = 16, iphone7plus = 11)))
+iphoneSales_df
+```
+
+
+```{r}
+# from iphoneSales_tibble extract the *vector* with the amounts of iphone7/7plus sold in 2017
+
+
+```
+
+##The pipe operator
+
+Before moving into tidyverse, we need to familiarize with the `%>%` (pipe), an operator that enables to chain functions rather than nesting them. That makes the code easier to process for humans rather than nesting multiple functions. For instance:
+```{r}
+round(mean(c(1:10, NA), na.rm = T), 0)
+```
+
+You can "pipe" the above functions using `%>%` (shortcut: shift+cmd/ctrl+I), which passes the output that preceeds `%>%` to the first argument of the subsequent function (or alternatively anywhere you place a `.`). For instance:
+
+```{r}
+c(1:10, NA) %>% 
+  mean(na.rm = T) %>% 
+  round(0)
+```
+
+Which is equivalent to 
+```{r}
+c(1:10, NA) %>% 
+  mean(x = . , na.rm = T) %>% 
+  round(x = ., digits = 0)
+#' the dot is just a pronoun for what precedes the pipe operator
+#' sometimes you don't want to pipe into the first argument
+c('hello', 'hi', 'bye', 'ciao') %>% 
+  gsub('ciao', 'hello', .)
+```
+
+
+```{r}
+# `$` is a function too. Can you pipe `iphoneSales` to `$` to extract the vectro `iPhoneX`? Then, calculate the mean removing NAs
+iphoneSales %>% 
+  .$iPhoneX
+```
+
+
+
+
+

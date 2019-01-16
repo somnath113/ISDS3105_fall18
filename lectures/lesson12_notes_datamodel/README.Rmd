@@ -1,0 +1,152 @@
+---
+title: "lesson 8: Querying a MySQL DB"
+output: github_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, error=T)
+library(tidyverse)
+```
+
+`dplyr` makes easy to translate R code into SQL code for querying databases. To see how that works, first we connect to our online reviews MySQL DB:
+
+```{r}
+#' this WON'T work off-campus unless you use a client server
+#' you need to add USN/PW to con.R
+#' DON'T push con.R to GitHub -- use .gitinore
+source(here::here('lectures/lesson08_notes_datamodel/conn.R'))
+dbListTables(con) # these are the entities in the DB
+dbListFields(con, 'review') # these are the attributes in the entity review
+```
+
+Each dplyr query, is trasnlated to a SQL query. For instance, to query a whole entity:
+
+```{r}
+myTable <- tbl(con, 'review')
+show_query(tbl(con, 'review')) #this shows how tbl(con, 'review') translates to SQL
+tbl(con, sql('SELECT * FROM review')) #this is how you can use actual SQL
+```
+
+Note that even if you assign `tbl(con, 'review')` to an object, each time you call the object dplyr queries the DB again (you are not saving the table on your local machine). Also, note that you cannot use R function that are unavailable on your database. For instance:
+
+```{r}
+tbl(con, 'review') %>% mutate(mean(reviewService, na.rm = T))
+```
+
+A viable solution is to `collect()` the output of your query before:
+
+```{r}
+tbl(con, 'review') %>% collect %>% summarise(avg = mean(reviewService, na.rm = T))
+```
+
+However, you want to `collect()` as late as possible to make sure you leverage the computational power of your server and you avoid downloading unnecessary data on your machine.
+
+
+#. Report the distinct types of hotels
+
+```{r}
+options(warn = -1)
+q1 <- tbl(con, 'hotel') %>% 
+         distinct(hotelType) 
+collect(q1)
+```
+
+
+#. Report the top 3 hotels with the highest number of rooms (keep only hotelId, hotelName, hotelRooms)
+
+```{r}
+tbl(con, 'hotel') %>%
+ select(hotelId,hotelName,hotelRooms) %>%
+ arrange(desc(hotelRooms)) %>% collect() %>% 
+ slice(1:3)
+
+tbl(con, sql('SELECT hotelId, hotelName, hotelRooms from hotel order by hotelRooms desc limit 3'))
+```
+
+
+#. Count the independent business (those who do not belong to any brand)
+
+```{r}
+tbl(con, 'hotel') %>%
+ select(hotelId, hotelName, brandId) %>%
+ filter(is.na(brandId)) %>%
+ count() %>% rename(total  = n)
+ # tally()
+```
+
+
+#. Report the top 3 hotels with the best service (calculate the average using review.reviewService)
+
+```{r}
+tbl(con, 'hotel') %>% inner_join(tbl(con, 'review'), by = c('hotelId' = 'hotelId')) %>% 
+  group_by(hotelName) %>% 
+  summarise(avg = mean(reviewService)) %>% 
+  arrange(desc(avg)) %>% 
+  collect() %>% slice(1:3)
+```
+
+
+#. Report all the authors and the hotels they reviewed. Report the author name, the hotel ID and hotel name. Order the output by author name
+
+```{r}
+tbl(con, 'hotel') %>%
+ inner_join(tbl(con, 'review')) %>%
+ inner_join(tbl(con, 'author')) %>%
+ select(authorNickname, hotelName, hotelId) %>%
+ arrange(desc(authorNickname))
+
+```
+
+
+#. Report the total number of reviews received by each hotel. Report a three columns table with `hotelId`, `hotelName` and total number of reviews. Make sure that you are including hotels with zero reviews as well. Note that some hotels have 0 reviews. If you decide to count the rows in each grouping level, make sure you you don't count as 1 those who have zero reviews.
+
+```{r}
+dt <- tbl(con, sql('SELECT hotel.hotelId, hotel.hotelName, COUNT(reviewId) FROM hotel, review WHERE hotel.hotelId = review.hotelId GROUP BY review.hotelId'))
+
+tbl(con, 'hotel') %>%
+ left_join(tbl(con, 'review')) %>%
+  select(hotelId, hotelName, reviewId) %>% 
+  count(hotelId, hotelName, wt = !is.na(reviewId), sort = T)
+```
+
+
+#. Report how many chains established their headquarter in each country. Plot a barchart those frequencies by country and then add a title to your plot. Adjust your axes' labels as needed (remember that non-data ink points are modified within `theme()`).
+
+```{r}
+tbl(con, 'lodgingchain') %>% 
+  count(headquarters) %>% 
+  ggplot() +
+  geom_col(aes(x = headquarters, y = n)) +
+  theme(axis.text.x = element_text(angle  = 45, hjust = 1))
+```
+
+
+#. For each review of stays during 2011, calculate the composite average score as the mean of Location, Room, Service, Value and Cleanliness. Then plot a histogram (using `geom_hist()`) of the differences between the average of those 5 attributes and ratingOverall.
+
+```{r}
+tbl(con, 'review') %>% filter(reviewStayYear == 2011) %>% 
+  collect() %>% 
+  gather('attribute', 'score', reviewCleanliness:reviewValue) %>% 
+  group_by(reviewId) %>% summarise(compAvg = mean(score), overall = mean(reviewOverall)) %>% 
+  mutate(diff = compAvg - overall) %>% 
+  ggplot() +
+  geom_histogram(aes(x = diff))
+```
+
+*warning*: If you query the DB and then pipe the remote table into a ggplot2 function, you might need to `collect()` the remote table before passing it to `ggplot()`, because `ggplot()` expects a class `data.frame` (and tibbles are also data.frame). However, if you pass a different object (such as a connection) "it will be converted to one by fortify()" (see the documentation `?ggplot()`). 
+Apparently, for some of you `fortify()` does not convert the table to a local data.frame, and if that is the case you need to `collect()`.
+
+
+#. Report all data about brands that have minimum square footage requirement for rooms that exceeds the average minimum square footage of all brands by at least 50%.
+
+```{r}
+tbl(con, 'brand') %>% 
+  filter(!is.na(brandMinSqFt)) %>% collect() %>% 
+  filter(brandMinSqFt >= mean(brandMinSqFt)*1.5)
+```
+
+
+
+

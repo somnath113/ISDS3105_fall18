@@ -61,7 +61,7 @@ if (!require('scales')) {
   install.packages('scales')
   library('scales')}
 #create a vector of 4 "pretty breaks" based on min/max values
-bks <- cbreaks(c(min(bad_drivers$insurance_premiums), max(bad_drivers$insurance_premiums)), pretty_breaks(4))
+bks <- cbreaks(range = c(min(bad_drivers$insurance_premiums), max(bad_drivers$insurance_premiums)), pretty_breaks(4))
 ```
 
 
@@ -85,7 +85,7 @@ And of course, we can use facetting too. For instance for plotting both `perc_sp
 select(bad_drivers, state, perc_speeding, perc_alcohol) %>% 
   mutate(state = tolower(state)) %>% 
   right_join(states, by = c('state'='region')) %>% 
-  gather(hazardType, perc, perc_speeding, perc_alcohol) %>% 
+  gather('hazardType', 'perc', perc_speeding, perc_alcohol) %>% 
   mutate(hazardType = case_when(hazardType == 'perc_speeding' ~ "% speeding",
                                 T ~ "% alcohol"),
          perc = perc/100) -> dt 
@@ -106,9 +106,11 @@ Similarly to any other geoms, you can map more variables to the other aes availa
 
 ```{r}
 #data source: https://uselectionatlas.org/
-dtEl <- readxl::read_xlsx(here::here('data/US_presidentialElection.xlsx'), sheet = 2, skip=1) %>% slice(-1)
+dtEl <- readxl::read_xlsx(here::here('data', 'US_presidentialElection.xlsx'), sheet = 2, skip=1) %>% slice(-1)
 dtEl <- dtEl %>% select(State, `Clinton, Hillary - Democratic`, `Trump, Donald - Republican`, PVI) %>% 
   gather('candidate', 'share', -State, -PVI)
+
+dtEl <- dtEl %>% group_by(State) %>% arrange(desc(share)) %>% slice(1) %>% ungroup()
 
 dtEl <- mutate(dtEl, State = tolower(State))
 dtEl <- dtEl %>% 
@@ -136,18 +138,16 @@ However, the issue with the previous map is that bigger shape somewhat magnetize
 
 
 ```{r}
-if (!require('geofacet')) install.packages('geofacet')
-
+if (!require('geofacet')) {
+  install.packages('geofacet')
+  library('geofacet')}
 
 bad_drivers %>% left_join(tibble(abb = state.abb,state = state.name)) %>% 
-    mutate(abb = case_when(state=='District of Columbia' ~ 'DC', T ~ abb)) %>% 
-    mutate(x = 1) %>% # size of the bar being plotted. All bars should be same size to make perfect squares
-    mutate(label_y = .5) %>%  # this location of state labels
-    mutate(label_x = 1) %>% 
+    mutate(abb = case_when(state=='District of Columbia' ~ 'DC', T ~ abb)) %>%
     ggplot() +
-    geom_col(mapping=aes(x=x, y = x, fill=insurance_premiums))  +
+    geom_col(mapping=aes(x= 1, y = 1, fill=insurance_premiums))  + #size of the bar being plotted. All bars should be same size to make perfect squares
     facet_geo(~ state, grid = "us_state_grid1") +
-    geom_text(aes(x=label_x, y=label_y, label=abb), color='#ffffff', size=8) +
+    geom_text(aes(x=1, y=.5, label=abb), color='#ffffff', size=8) + ## this location of state labels
     scale_fill_continuous(low = '#ccdbe5', high= "#114365", guide = guide_colorbar(title = 'Premiums'), labels=dollar_format()) + 
     ggtitle('The US elections') +
     theme_classic() + # theme classic removes many ggplot defaults (grey background, etc)

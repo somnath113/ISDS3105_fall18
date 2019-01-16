@@ -1,0 +1,130 @@
+
+
+
+
+
+However, can save some typing by specifying an anonymous function directly into `map()`. Anonymous functions are not stored into objects, thus we can only call them inside another function:
+
+```{r}
+map(bad_drivers, function(x) mean(x, na.rm = TRUE))
+```
+
+When using `purrr::map()` we can save even more typing by using `~` to initiate an anonymous function:
+
+```{r}
+map(.x = bad_drivers, ~ mean(.x, na.rm = TRUE))
+```
+
+
+Other functions in the `map()` family make also easier to coerce the output to a specific data type. For instance, we can output atomic vectors `map_*`:
+
+```{r}
+map_dbl(bad_drivers, mean, na.rm = TRUE)
+map_chr(bad_drivers, mean, na.rm = TRUE)
+```
+
+
+ 1. Use the appriate `map_*` to calculate the number of `NA` for each column of `bad_drivers`:
+
+```{r}
+#hint: remember that you can sum logical values (T = 1, F = 0)
+map_dbl(bad_drivers, ~ sum(is.na(.x)))
+```
+
+ 2. Use the appriate `map_*` to calculate the number of unique values in each column of `steak_survey`:
+
+```{r}
+map(steak_survey, ~ length(unique(.x)))
+map(steak_survey, ~ unique(.x) %>% length())
+```
+
+
+We can also use map to run functions on subsets of our dataset, using `split()` to subset conditionally:
+
+```{r}
+
+split(bad_drivers, bad_drivers$state %in% c('Louisiana', 'Alabama', 'Mississippi', 'Georgia', 'South Carolina'))
+
+bad_drivers %>% 
+        split(. , .$state %in% c('Louisiana', 'Alabama', 'Mississippi', 'Georgia', 'South Carolina')) %>% 
+        map(~ cor(.$insurance_premiums, .$losses))
+```
+
+However, we could do the above using `dplyr`. Use dplyr to calculate the correlation between premiums and losses:
+
+```{r}
+#hint: create a variable `south` for grouping
+bad_drivers %>% mutate(south = state %in% c('Louisiana', 'Alabama', 'Mississippi', 'Georgia', 'South Carolina')) %>% 
+  group_by(south) %>% 
+  summarise(corr= cor(insurance_premiums, losses))
+```
+
+But combining `map` with `split` streamlines more complex tasks, such as creating multiple charts. So far, the only tool we had to create set of graphs has been `facet_wrap`. Instad, `map()` allows to generate multiple distinct charts:
+
+```{r}
+bad_drivers %>% 
+            split(.$state %in% c('Louisiana', 'Alabama', 'Mississippi', 'Georgia', 'South Carolina')) %>% 
+            map( ~ ggplot(data = ., aes(x = losses, y = insurance_premiums)) + geom_point() )
+```
+
+How would you approach the above problem using `facet_wrap`?
+
+```{r}
+bad_drivers %>% mutate(south = state %in% c('Louisiana', 'Alabama', 'Mississippi', 'Georgia', 'South Carolina')) %>% 
+  ggplot(data = ., aes(x = losses, y = insurance_premiums)) + geom_point() +
+  facet_wrap(~ south)
+```
+
+
+## Mapping over multiple arguments
+
+Creating charts functionally is useful, but it would but it is hard to reuse them without saving them. For instance, image if each of your charts plotted thousands of records: You would rather not rerun the code every time you knit, because it would be extremely time consuming. Instead, you could embed your charts as static images, and generate all of them only once using a separate script. To do that, we could loop over `ggsave` which saves ggplot graphs to files.
+
+First, we solve the issue for a specific case:
+
+```{r}
+allDataPlot <- ggplot(data = bad_drivers, aes(x = losses, y = insurance_premiums)) + geom_point()
+ggsave(filename = 'allDataPlot.png', allDataPlot)
+```
+
+We notice that for each call to `ggsave` we need a file name and an object with the ggplot graph. We can create two new objects with the values for  both arguments:
+
+```{r}
+subsets <- bad_drivers %>% 
+            split(.$state %in% c('Louisiana', 'Alabama', 'Mississippi', 'Georgia', 'South Carolina')) 
+            
+plots <- subsets %>% map( ~ ggplot(data = ., aes(x = losses, y = insurance_premiums)) + geom_point() )
+filenames <- paste0(names(subsets), '.png')
+```
+
+If we had to do it in a for loop:
+
+```{r}
+for (i in seq_along(plots)) {
+  
+  ggsave(filename = filenames[[i]], plot = plots[[i]])
+
+}
+```
+
+But we can do the same using `map2`:
+
+```{r}
+map2(filenames, plots, ggsave)
+```
+
+
+**Exercise**: Use `steak_survey`. For each age brackets, create a barchart showing the count of haushold income levels. Save each graph as a sepearate `.png` file. This means you want to have `r length(levels(fivethirtyeight::steak_survey$age))` charts in total.
+
+```{r}
+plots <- steak_survey %>% split(.$age) %>% map(.x = . , ~ ggplot(data = .x) + geom_bar(aes(x = hhold_income)))
+names <- paste0('ageLevel',levels(steak_survey$age), '.png')
+#ggplot(data = steak_survey) + geom_bar(aes(x = hhold_income))
+
+map2(names, plots , ~ ggsave(.x, .y))
+```
+
+
+
+
+
