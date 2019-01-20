@@ -48,7 +48,9 @@ Our (free) textbook
 
 Wickham, H. and Grolemund, G., 2016. <i>R for data science: import, tidy, transform, visualize, and model data.</i> O'Reilly Media, Inc.
 
+<div>
 <img src='images/r4ds.png';>
+</div>
 
 Don't by the paper copy, the latest version is online
 
