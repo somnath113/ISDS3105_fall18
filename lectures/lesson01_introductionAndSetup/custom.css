@@ -12,8 +12,12 @@ background-color: #FDD023;
   padding-top: 400px;
 }
 
+
 .reveal section img {
-  max-width: 200px;
+  float: left;
+  padding: 40px;
+  max-width: 300px;
+  max-height: 120px;
   background-color: #FDD023;
   box-shadow: none;
 }

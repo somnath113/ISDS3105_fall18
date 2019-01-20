@@ -20,42 +20,50 @@ email: dbonar1@lsu.edu
 What you will learn
 ========================================================
 
+<ol>
+  <li>Effective project management using IDE resources (projects) and version control (Git/GitHub)</li>
+  <li>Understand the fundamentals of R programming</li>
+  <li>Web scraping (using rvest)</li>
+  <li>Dataset wrangling and manipulation (using dplyr/tidyr)</li>
+  <li>Chart design and creation for data visualization (using ggplot2)</li>
+  <li>Efficient and effective results presentation using dynamic and interactive reporting techniques (RMardkown)</li>
+  <li>Querying remote relational databases (MySQL) and other source systems (using dplyr)</li>
+  <li>T-test and regression (using ggplot2, plotly, infer)</li>
+</ol>
 
 
 Tools we will use
 ========================================================
 
+
+<div>
 <img class = 'logo' src='images/Rlogo.png';>
-
 <img class = 'logo' src='images/rstudioLogo.png';>
-
-<img class= 'logo' src="images/gitLogo.png";>
-
-<img class= 'logo' src="images/githubLogo.png";>
-
+<img class = 'logo' src="images/gitLogo.png";>
+<img class = 'logo' src="images/githubLogo.png";>
+</div>
 
 Our (free) textbook
 ========================================================
 
-Wickham, H. and Grolemund, G., 2016. R for data science: import, tidy, transform, visualize, and model data. " O'Reilly Media, Inc.".
+Wickham, H. and Grolemund, G., 2016. <i>R for data science: import, tidy, transform, visualize, and model data.</i> O'Reilly Media, Inc.
 
-[]('images/textbook.png')
+<img src='images/r4ds.png';>
 
-I do not recommend buying it unless you really like reading on paper. They just update it too often.
+Don't by the paper copy, the latest version is online
 
 Final grade breakdown
 ======
+<br>
+<ul>
+<li>Assignments (8) 20%</li>
+<li>Mid-term 30%</li>
+<li>Group Project 20%</li>
+<li>Final Exam 25% </li>
+<li>Professionalism 5%</li>
+</ul>
 
- - Assignments (8) 20%
-
- - Mid-term 30%
-
- - Group Project 20%
-
- - Final Exam 25% 
-
- - Professionalism 5%
-
+ 
 Where to seek help
 ======
  
