@@ -80,29 +80,31 @@ Where to seek help
 Learn how to ask a question on stackoverflow.com before posting
 ====== 
 
-As your questions using a [reproducible example]() and you may be answered withing seconds!
+Search for similar questions first
 
-Answers to questions that do not use a [reproducible example]() sound sometimes rude, but that's just because of the frustration of uncecesfully ask users to use a [reproducible example]().
+Use a **reproducible example** ([short](http://adv-r.had.co.nz/Reproducibility.html) | [long](https://stackoverflow.com/questions/5963269/how-to-make-a-great-r-reproducible-example) explanation) for asking questions. Consider using the package [reprex](https://github.com/tidyverse/reprex) to produce reproducible code snippets.
 
-You'll be surprised by how framing a question as a [reproducible example]() may actually make the solution as self-evident.
+Members of the Stacoverflow community may respond quite brutally to questions that do not use a reproducible example. 
+
+Thinking about a reprex may take extra time, but you'll be surprised by how creating a reprex may actually make the solution self-evident.
 
 Contribute to the quality of the course
 ====== 
 
-Fell free to open an issue on GitHub for problems with the content (e.g., links not working, bugs)
+Fill free to open an issue on GitHub for problems with the content (e.g., links not working, bugs)
 
-I'll also be happy to adapt the material based on your feedback so feel free to email or talk to me for critiques 
+I'll be happy to adapt the material based on feedback so email or talk to me for critiques 
  
 A recipe to succeed in this class
 ====== 
 
-**Do the ouside class work**. There are not shortcuts: you need to practice (e.g., assignemnt, non-graded exercises), expecially if it is your first coding class. Starting off with the right step is a way easier than catching up later in the semester.
+**Do the ouside class work**. There are not shortcuts: you need to practice (e.g., assignemnt, non-graded exercises), expecially if this is your first coding class. Starting off with the right step is way easier than catching up later in the semester.
 
-**Be open-minded and patient**. Sometimes there are multiple ways of doing the same thing in R. And there are endless ways of doing things wrong. You may incurr in a few of them before you get something right, so be patient and give yourself enough time before giving up.
+**Be open-minded and patient**. Sometimes there are multiple ways of doing the same thing in R. And there are endless ways of doing things wrong. So be patient and give yourself some time before giving up.
 
-**Be collaborative and a team-player**. There is a lot of learning from your classmates mistake, and from collaborative thinking about taclking the same problems. Learning how *not* to do things is learning. And learning different approaches to do the same thing is learning too.
+**Be collaborative and a team-player**. There is a lot to learn from your classmates mistake, and from collaborative thinking about taclking a problem. Learning different approaches to do the same thing is learning. Learning how *not* to do things from your classmates is learning too.
 
-**Be committed since day 1**. The course heavily builds on prior classes. The mid-term exam will ensure you are keeping up with the material.
+**Be committed since day 1**. The course heavily builds on prior classes. The mid-term exam will assess whether you are keeping up with the material.
 
 
 

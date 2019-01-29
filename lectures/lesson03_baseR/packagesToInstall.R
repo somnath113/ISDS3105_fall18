@@ -7,3 +7,6 @@ devtools::install_github("dkahle/ggmap", ref = "tidyup")
 
 if (!require(tidyverse)) {install.packages('tidyverse')}
 library(tidyverse)
+
+
+here::here('data', 'add-on-packages-freqtable.csv')

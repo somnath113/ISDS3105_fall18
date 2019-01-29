@@ -6,6 +6,7 @@ autosize: true
 
 An artistic approach to version control
 ========================================================
+<br>
 `
 MyAnalysis_01.R
 MyAnalysis_02.R

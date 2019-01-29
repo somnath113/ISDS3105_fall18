@@ -23,12 +23,13 @@ mean(myVector)
 
 Cont'd
 ====== 
- - Every function requires a minimum set of arguments to run successfully (e.g., `mean()` requires an argument `x`)
+
+ - A function may require a minimum set of arguments to run successfully (e.g., `mean()` requires an argument `x`)
 ```{r, error=T}
 mean()
 ```
 
- - Every function has constraints about the type of object to be passed (e.g., `sum()` expects a vector)
+ - A function may contrain the type of object to be passed (e.g., `sum()` expects a vector)
 ```{r, error = T}
 sum('hello')
 ```
@@ -140,6 +141,18 @@ menu[-c(2:3)]
 ```
 
 
+Exercise
+===
+
+Use `sum()` and the vector `menu` to calculate the cost of the DDSLab research lunch at Gino's
+
+```{r}
+menu <- c(pizza = 8, lasagne = 7.50, pasta = 7)
+receipt <- c(Dario = 'lasagne', Som = 'pizza', Sun = 'pasta', Jo = 'pizza', Gabe = 'pasta', Biagio = 'pasta')
+```
+
+
+
 Recursive Vectors - lists
 ======= 
 
@@ -155,45 +168,15 @@ str(myList, max.level = 1)
 Recursive Vectors - lists
 ======= 
 
-Most likely, we will never manipulate lists objects. However, many functions return lists.  For example, the output of fiting a linear model `lm()` is a list:
+Most likely, we will never manipulate list objects. However, many functions return lists.  For example, the output of fitting a linear model `lm()` is a list:
 
 ```{r}
 fit <- lm(mpg ~ wt, data = mtcars)
-str(fit, max.level = 0)
+str(fit, max.level = 0) #change max.level to view elements in the list
 ```
 
 
-Exercise 
+For the next time
 =======
-Work out the exercises on a new branch of your git repo. Once you are confident that your solutions are correct, merge the branch you created to your master branch. Follow this workflow:
 
-1. Save and commit everything up to now
-2. Create a new branch and switch to it `$ git checkout -b solutions` (`$ git checkout [name_of_your_new_branch]` to switch between branches)
-3. Go back to your master `$ git checkout master` and merge it with `solutions` using `$ git merge solutions`
-4. After you merge, commit to master and push to GitHub
-
-
-Respond to the following questions and push the responses to your GitHub:
-=======
- - Create a character vector `family` with your family members' name
- - Create a vector `birth` with their birth year 
- - Create another vector `age` with your family members' ages (calculated using `birth`)
- - Use `typeof()` to make sure that `family`, `birth`, and `age` are the appropriate type (character, integer/double, integer/double)
- - Use `names()` to name the elements of `age` with the family members' names from `family`
- - Use inline code `r ##` to print your name and age (using indexing)
-
-
-Respond to the following questions and push the responses to your GitHub:
-====
-
- - What happens when:
-   + You extract using a positive index bigger than the vector length?
-   + You subset by a name that doesn't exist?
-   + You assign a number to position 20 of the age vector? 
-   
- - Read carefully the documentation for `is.vector()`. If `is.vector(x)` retrieves `TRUE`, does it mean that `x` is an atomic vector?
-
-
-
-
-
+Complete `assignment01`
