@@ -32,7 +32,7 @@ iphoneSales <- data.frame(
 Data frame
 ===
 
-Note how "time" is a factor and not a character -- more details at http://r4ds.had.co.nz/factors.html#creating-factors
+Note how "time" is a factor and not a character. Read about [creating factors](http://r4ds.had.co.nz/factors.html#creating-factors)
 
 ```{r}
 str(iphoneSales)
@@ -72,20 +72,8 @@ iphoneSales$iPhone4S
 
 Exercise
 ===
-```{r}
-#extract the first two elements of column "IPhone6s"
 
-#subset iphoneSales to a dataframe with only time, iPhone5C, IPhoneX
-
-#keep only the rows where the sales for iPhoneSE are higher than 7 AND are not NA (AND = &, OR = |, NOT = !)
-
-#Use %in% to keep only the rows for c("Sep 2014", "Sep 2015", "Sep 2018")
-
-#calculate the mean() of the IPhone7 sold 
-
-#use inline code to print the mean of the iphone sold in Jun 2018
-
-```
+Complete exercises part 1.
 
 
 Tibbles
