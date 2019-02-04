@@ -1,0 +1,66 @@
+---
+title: "Practice for lesson 7"
+author: "Dario Bonaretti"
+output:
+  html_document: default
+editor_options:
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(fivethirtyeight)
+library(tidyverse)
+```
+
+
+1. Use `fivethirtyeight::steak_survey` to plot a barchart of the count of missing values for each "hazardous behaviors" (those from `smoke` to `cheated`). 
+
+```{r}
+
+```
+
+
+2. Use `fivethirtyeight::murder_2015_final` to calculate the average murders per year. Your final output should look like:
+
+  year | total
+ ------|--------
+  2014 | 65.7    
+  2015 | 75.5    
+  
+After using gather() to create the variables `year` and `total` (total count per city), use the function `?str_sub()` to extract the numeric part from the column names from `year` and then coerce `year` to an integer/double.
+
+```{r}
+
+```
+
+
+3. Use `fivethirtyeight::flying` to plot a barchart with the count of "arm resting" preferences for `middle_arm_rest` (3 seats row) and `two_arm_rests` (2 seats row). Create a bar for each of the two, and map the count of the responses to the fill of each bar.
+
+```{r}
+
+```
+
+4a. Use `dt` to calculate the mean for each attribute by each treatment. Description of the dataset available [here](https://github.com/DarioBoh/data/tree/master/colorAnchors)
+
+```{r}
+dt <- readr::read_csv('https://raw.githubusercontent.com/DarioBoh/data/master/colorAnchors/reviews_definitive.csv')
+```
+
+4b. Plot a barchart of the attributes' means facetting by attribute (one facet for each attribute, and 4 treatment means in each facet).
+
+4c. Use `dtColorB` to conclude whether someone is color blind: If the participant misidentified at least two numbers, he is color blind. Because we are being conservative, we consider `NA` as wrong asnwers. Reduce `dtColorB` to a dataset with to variables only: `memberID`, and `colorBlind`. `ColorBlind` is a variable indicating whether the participant failed/passed the test.
+
+```{r}
+dtColorB <- readr::read_csv('https://raw.githubusercontent.com/DarioBoh/data/master/colorAnchors/colorBlindness.csv')
+```
+
+4d. Use a join function to drop from `dt` those participants who failed the colorblindness test. Repeat 4b using non-colorblind participants only.
+
+
+
+
+
+
+
+
