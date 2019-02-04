@@ -32,7 +32,7 @@ mean()
 Error in mean.default(): argument "x" is missing, with no default
 ```
 
- - A function may contrain the type of object to be passed (e.g., `sum()` expects a vector)
+ - Some functions require to pass specific object of a specific type (e.g., `sum()` expects a vector)
 
 ```r
 sum('hello')
