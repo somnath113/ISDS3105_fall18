@@ -1,0 +1,21 @@
+---
+title: "Notes about semiotics of coding"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Many programming languages are similar between them, thus the following of concepts applies is not specific to R.
+
+An algorithm is a finite set of instructions to follow for converging towards a final stage starting from some initial information. Convergence - when possible - is determined by a unique criterion.
+
+Languages:
+
+- machine code
+- assembler
+- high level programming language: FORTRAN, COBOL, LISP, PROLOG, PASCAL, JAVA
+- low level programming language
+
+Objects are hierarchically sorted in classes and subclasses. Methods are operations that an object of a specific class can execute (e.g., a *oven* can **turn on** or **check temperature**). The events that an object returns are output. Because classes are organized hierachically, properties from higher-level classes are inherited by subclasses. 
