@@ -1,5 +1,5 @@
 ---
-title: "Lesson 2: Writing functions"
+title: "Lesson 5: Writing functions"
 output: github_document
 editor_options:
   chunk_output_type: console
@@ -16,7 +16,7 @@ knitr::opts_chunk$set(echo = TRUE, message = F)
 
 #Using functions to automate tasks
 
-Functions are tools for automating common tasks. What do we mean by "common"? That is subjective. Copy-pasting the same code multiple times that is usually a sign that a task is becoming "common". That means you should recode it into a function. Not only that saves you a lot of typing, but it also keeps the instructions for that task in the same place, avoiding duplications. That makes easier to fix bugs and maintain the code, because you will need to adjust your code only in the body of the function.
+Functions are tools for automating common tasks. What do we mean by "common"? That is subjective. Copy-pasting the same code multiple times is usually a sign that a task is "common". Perhaps you should recode it into a function. Functions make you type less, but they also keep the instructions for tasks in the same place, thus avoiding duplications. That makes easier to fix bugs and maintain the code, since you will need to adjust your code only in the function's body.
 
 Each function has three constitutive elements: function name, attribute, and body.
 
@@ -251,7 +251,6 @@ For the pros: Use `BRRR::skrrrahh(34)` to listen DJ Khaled yelling "They don't w
 
 ```{r}
 # install devtools - a package to install packages directly from GitHub
-if(!require(devtools)) {install.packages('devtools')}
 # install BRRR from GitHub
 devtools::install_github("brooke-watson/BRRR")
 ```
