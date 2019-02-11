@@ -32,7 +32,7 @@ iphoneSales <- data.frame(
 Data frame
 ===
 
-Note how "time" is a factor and not a character -- more details at http://r4ds.had.co.nz/factors.html#creating-factors
+Note how "time" is a factor and not a character. Read about [creating factors](http://r4ds.had.co.nz/factors.html#creating-factors)
 
 
 ```r
@@ -177,19 +177,7 @@ iphoneSales$iPhone4S
 Exercise
 ===
 
-```r
-#extract the first two elements of column "IPhone6s"
-
-#subset iphoneSales to a dataframe with only time, iPhone5C, IPhoneX
-
-#keep only the rows where the sales for iPhoneSE are higher than 7 AND are not NA (AND = &, OR = |, NOT = !)
-
-#Use %in% to keep only the rows for c("Sep 2014", "Sep 2015", "Sep 2018")
-
-#calculate the mean() of the IPhone7 sold 
-
-#use inline code to print the mean of the iphone sold in Jun 2018
-```
+Complete exercises part 1.
 
 
 Tibbles
@@ -311,10 +299,10 @@ c(1:10, NA) %>%
 [1] 6
 ```
 
-The pipe operator
+The pipe operator (2)
 ===
 
-We can can be more explicit about writing the previous code using the pronoun `.`:
+We can rewrite the previous code using the pronoun `.`:
 
 
 ```r
@@ -339,20 +327,12 @@ c('hello', 'hi', 'bye', 'ciao') %>%
 [1] "hello" "hi"    "bye"   "hello"
 ```
 
+Exercise
 ===
 
 
-```r
-# `$` is a function too. Can you pipe `iphoneSales` to `$` to extract the vectro `iPhoneX`? Then, calculate the mean removing NAs
-iphoneSales %>% 
-  .$iPhoneX
-```
+
 
 ```
-[1]   NA   NA   NA   NA   NA 20.1 17.0
+Error in eval(expr, envir, enclos) : '...' used in an incorrect context
 ```
-
-
-
-
-

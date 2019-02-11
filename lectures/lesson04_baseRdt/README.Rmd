@@ -50,10 +50,10 @@ typeof(iphoneSales)
 ```
 
 
-Indexing works similarly to vectors, but note the difference between _extracting_ and _selecting_:
+Indexing works similarly to vectors, but note the difference between _extracting_ and _subsetting_:
 
 ```{r}
-#selecting
+#subsetting
 iphoneSales['iPhone4S']
 iphoneSales[2]
 #extracting
