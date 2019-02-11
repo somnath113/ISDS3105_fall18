@@ -1,6 +1,7 @@
 #' ---
 #' title: "Assingment 3"
 #' author: ""
+#' output: github_document
 #' ---
 
 #' For this assignment we are using a dataset from the website [Fivethirtyeight](http://fivethirtyeight.com/). 
