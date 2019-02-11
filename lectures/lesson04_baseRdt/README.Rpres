@@ -135,10 +135,10 @@ c(1:10, NA) %>%
   round(0)
 ```
 
-The pipe operator
+The pipe operator (2)
 ===
 
-We can can be more explicit about writing the previous code using the pronoun `.`:
+We can rewrite the previous code using the pronoun `.`:
 
 ```{r}
 c(1:10, NA) %>% 
@@ -153,12 +153,13 @@ c('hello', 'hi', 'bye', 'ciao') %>%
   gsub(pattern = 'ciao', replacement = 'hello', x = .)
 ```
 
+Exercise
 ===
 
 ```{r}
-# `$` is a function too. Can you pipe `iphoneSales` to `$` to extract the vectro `iPhoneX`? Then, calculate the mean removing NAs
+# `$` is a function too. Can you pipe `iphoneSales` to `$` to extract the vector `iPhoneX`? Then, calculate the mean removing NAs
 iphoneSales %>% 
-  .$iPhoneX
+  ...
 ```
 
 
