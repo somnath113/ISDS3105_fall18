@@ -45,15 +45,15 @@ Dataframes are a special case of a list, where each element is a vector of the s
 
 ```{r}
 str(iphoneSales)
-class(iphoneSales)
-typeof(iphoneSales)
+class(iphoneSales) # talks about the method 
+typeof(iphoneSales) # how the object is stored in memory
 ```
 
 
 Indexing works similarly to vectors, but note the difference between _extracting_ and _selecting_:
 
 ```{r}
-#selecting
+#subsetting
 iphoneSales['iPhone4S']
 iphoneSales[2]
 #extracting
