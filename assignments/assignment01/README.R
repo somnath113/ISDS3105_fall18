@@ -9,7 +9,7 @@
 #' 2. Create a new branch and switch to it `$ git checkout -b solutions` (`$ git checkout [name_of_your_new_branch]` to switch between branches)
 #' 3. Go back to your master `$ git checkout master` and merge it with `solutions` using `$ git merge solutions`
 #' 4. After you merge, commit to master and push to GitHub
-#' use command in terminal 'git remote -v' to find out all the repos 
+#' use command in terminal 'git remote -v' to find out all the repos. To get from other repo(dario) use 'git pull dariomaster master'
 
 
 #' Complete to the following tasks and push the responses to your GitHub:
