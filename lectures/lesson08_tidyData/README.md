@@ -1,11 +1,11 @@
-Lesson6: Tidy datasets for Dataviz"
+Lesson 8: Tidy datasets for Dataviz"
 ================
 
-Plotting in ggplot2 requires that you use so called [tidy
+To plot in ggplot2 make sure you use [tidy
 datasets](http://r4ds.had.co.nz/tidy-data.html) (check [this
 article](http://vita.had.co.nz/papers/tidy-data.html) for a more in
-depth explanation). The requisites for a *tidy dataset* (also called
-*longitudinal* or *normal*) are:
+depth explanation). Tidy datasets (also called *longitudinal* or
+*normal*) comply with three rules:
 
 1.  Each variable is in a column.
 2.  Each observation is a row.
@@ -18,23 +18,8 @@ necessarily “bad”, but they are unsuitable for plotting in ggplot2.
 
 For instance, look at `sn_users`
 
-| year | twitter | facebook |
-| ---: | ------: | -------: |
-| 2015 |    52.5 |    132.9 |
-| 2016 |    56.8 |    143.5 |
-| 2017 |    60.9 |    150.8 |
-| 2018 |    64.9 |    158.0 |
-| 2019 |    67.9 |    163.0 |
-| 2020 |    70.7 |    167.4 |
-
-What rules of the 3 mentioned above does `sn_users` violate? Would you
-still be able to plot a line chart of the number of users by year?
-
-``` r
-#ggplot() +
-#  geom_line(aes(x  = ..., y =  ... ), data = ...) +
-#  geom_line(aes(x = ..., y = ...), data = ...)
-```
+What rules of the 3 mentioned above does `sn_users` violate? Could you
+still plot a line chart of the number of users by year?
 
 To tidy `sn_users` we want (i) to collapse the millions of users under
 one variable (called for instance `Mil.Users`), and (ii) to turn the
@@ -47,24 +32,7 @@ straightforward using the function
 `tidyr::gather()`:
 
 ``` r
-gather(sn_users, key = 'socialNet', value = 'Mil.Users', twitter, facebook) 
-```
-
-    ##    year socialNet Mil.Users
-    ## 1  2015   twitter      52.5
-    ## 2  2016   twitter      56.8
-    ## 3  2017   twitter      60.9
-    ## 4  2018   twitter      64.9
-    ## 5  2019   twitter      67.9
-    ## 6  2020   twitter      70.7
-    ## 7  2015  facebook     132.9
-    ## 8  2016  facebook     143.5
-    ## 9  2017  facebook     150.8
-    ## 10 2018  facebook     158.0
-    ## 11 2019  facebook     163.0
-    ## 12 2020  facebook     167.4
-
-``` r
+gather(sn_users, key = 'socialNet', value = 'Mil.Users', twitter, facebook) #' key/value may be unquoted
 #gather(sn_users, key = 'socialNet', value = 'Mil.Users', -year) #does the same as above: keeps everything BUT year
 ```
 
@@ -72,9 +40,9 @@ Use the output from the `gather()` above to plot a line chart including
 both twitter and facebook data.
 
 ``` r
-# gather() %>% 
-#ggpolot(...) +
-#  geom_line(...)
+tidy_sn_user <- gather(....)
+ggpolot(...) +
+  geom_line(...)
 ```
 
 Another example of untidy dataset is `untidyReview` (a dataset of online
@@ -88,40 +56,37 @@ How many/what variables to you need?
 #pass the tidy dataset to ggplot() for plotting
 ```
 
-Now inspect the dataset for `iphoneSales`, containing the number of
-iphones sold worldwide (in millions) in each quarter. Make sure you tidy
-the dataset appropriately to plot a line chart where:
+Using the dataset `iphoneSales`, we want to plot the iphone sold
+worldwide (in millions) in each quarter. First, we need to tidy
+`iphoneSales`:
 
-  - each line represent the sales for a certain year
-  - each quart is mapped to the horizontal axis
+``` r
+iphoneSales_tidy <- gather(...)
+```
+
+Use `iphoneSales_tidy` to draw a linechart where:
+
+  - each line represents the sales within a year
+  - quarts mapped to the horizontal axis
   - `NA` values are dropped (check `?gather()` for the parameters that
     drops `NA`)
-  - not what you wanted? You might need to set
-`aes(group=...)`
+  - not what you wanted? You might need to set `aes(group=...)`
 
 <!-- end list -->
 
 ``` r
-# If you don't get the output you expect, inspect using str() or glimpse()
-# Also, note that by default, the group is set to the interaction of all 
-# discrete variables in the plot.
-
+#' Tidy the dataset
 gather(iphoneSales, ... ) %>% 
   ggplot() +
   geom_line(aes(x= ..., y = ..., color = ...))
 ```
 
-    ## Error in eval(lhs, parent, parent): '...' used in an incorrect context
-
-However, sometimes you actually want to untidy datasets, for example to
-make them more readable. To ‘untidy’ a dataset, we can use
-`tidyr::spread()`. For instance, try to use `spread()` to untidy
-`socialNetwork_users`.
+If you want to **untidy** datasets, for example to make them more
+readable, use `tidyr::spread()`. For instance, try to use `spread()` to
+untidy `socialNetwork_users`.
 
 ``` r
 #spread() to untidy
-#pass the output inside kable() to render a better looking table
-#plot a line chart mapping the color to each social network name, years to the horizontal axis, and percent to the vertical axis
 ```
 
 # Exercise
