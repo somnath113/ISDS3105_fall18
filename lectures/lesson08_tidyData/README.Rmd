@@ -1,20 +1,20 @@
 ---
-title: 'Lesson6: Tidy datasets for Dataviz"'
+title: 'Lesson 8: Tidy datasets for Dataviz"'
 output: github_document
 editor_options: 
   chunk_output_type: console
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE, eval = F)
 if(!require(knitr)) install.packages('knitr') #library for nicer tables in html/pdf
 library(tidyverse)
 load(here::here('data', 'dataset.RData'))
 ```
 
 
-Plotting in ggplot2 requires that you use so called [tidy datasets](http://r4ds.had.co.nz/tidy-data.html) (check
-[this article](http://vita.had.co.nz/papers/tidy-data.html) for a more in depth explanation). The requisites for a _tidy dataset_ (also called _longitudinal_ or _normal_) are:
+To plot in ggplot2 make sure you use [tidy datasets](http://r4ds.had.co.nz/tidy-data.html) (check
+[this article](http://vita.had.co.nz/papers/tidy-data.html) for a more in depth explanation). Tidy datasets (also called _longitudinal_ or _normal_) comply with three rules:
 
   1. Each variable is in a column.
   2. Each observation is a row.
@@ -30,33 +30,21 @@ kable(sn_users)
 #kable on the object to display.
 ```
 
-What rules of the 3 mentioned above does `sn_users` violate? Would you still be able to plot a line chart of the number of users by year?
-
-```{r}
-ggplot(data = sn_users, aes(x = year)) +
- geom_line(aes(y =  twitter, color = 'twitter' ) ) +
- geom_line(aes(y = facebook, color = 'fb')) +
-  #scale_y_continuous(name = 'sm')
-```
+What rules of the 3 mentioned above does `sn_users` violate? Could you still plot a line chart of the number of users by year?
 
 To tidy `sn_users` we want (i) to collapse the millions of users under one variable (called for instance `Mil.Users`), and (ii) to turn the headers `twitter` and `facebook` into levels of a single variable (for instance called `socialNet`). In other words, we want to create key-value pairs, duplicating the column `year` as many time as needed to preserve the association between social network (e.g. twitter), and a number of users observed at a certain year. This is quite straightforward using the function `tidyr::gather()`:
 
 ```{r}
-gather(sn_users, key = 'socialNet', value = 'Mil.Users', twitter, facebook) 
+gather(sn_users, key = 'socialNet', value = 'Mil.Users', twitter, facebook) #' key/value may be unquoted
 #gather(sn_users, key = 'socialNet', value = 'Mil.Users', -year) #does the same as above: keeps everything BUT year
-gather(sn_users, key = 'socialNet', value = 'Mil.Users')
 ```
 
 Use the output from the `gather()` above to plot a line chart including both twitter and facebook data.
 
 ```{r}
-# gather() %>% 
-#ggpolot(...) +
-#  geom_line(...)
-sn_users %>% 
-gather(key = "socialNet", value = 'Mil.Users', -year) %>%
- ggplot(aes(x = year, y = Mil.Users, color = socialNet)) +
- geom_line()
+tidy_sn_user <- gather(....)
+ggpolot(...) +
+  geom_line(...)
 ```
 
 Another example of untidy dataset is `untidyReview` (a dataset of online review ratings). Do you see why `untidyReview` is untidy? For instance, suppose we want to plot the distribution or ratings for each attributes (reviewOverall, reviewCleanliness, etc...) with `geom_bar()` and facets. How many/what variables to you need?
@@ -64,36 +52,36 @@ Another example of untidy dataset is `untidyReview` (a dataset of online review 
 ```{r}
 #gather()  use gather to 'tidy' the untidyReview
 #pass the tidy dataset to ggplot() for plotting
-gather(untidyReview, key= "Attributes", value="Rating", reviewOverall:reviewValue) %>% 
-  ggplot(aes(x = Rating)) +
- geom_bar() +
-facet_wrap(c('reviewStayYear', 'Attributes'))
 ```
 
-Now inspect the dataset for `iphoneSales`, containing the number of iphones sold worldwide (in millions) in each quarter. Make sure you tidy the dataset appropriately to plot a line chart where:
 
- - each line represent the sales for a certain year
- - each quart is mapped to the horizontal axis
+
+Using the dataset `iphoneSales`, we want to plot the iphone sold worldwide (in millions) in each quarter. First, we need to tidy `iphoneSales`:
+
+```{r}
+iphoneSales_tidy <- gather(...)
+```
+
+Use `iphoneSales_tidy` to draw a linechart where:
+
+ - each line represents the sales within a year
+ - quarts mapped to the horizontal axis
  - `NA` values are dropped (check `?gather()` for the parameters that drops `NA`)
  - not what you wanted? You might need to set `aes(group=...)`
  
 ```{r, error=TRUE}
-# If you don't get the output you expect, inspect using str() or glimpse()
-# Also, note that by default, the group is set to the interaction of all 
-# discrete variables in the plot.
-gather(iphoneSales, key = "Quarter", value = "Sales",-year , na.rm = TRUE) %>% str
+#' Tidy the dataset
 gather(iphoneSales, ... ) %>% 
   ggplot() +
   geom_line(aes(x= ..., y = ..., color = ...))
 ```
  
 
-However, sometimes you actually want to untidy datasets, for example to make them more readable. To 'untidy' a dataset, we can use `tidyr::spread()`. For instance, try to use `spread()` to untidy `socialNetwork_users`.
+If you want to **untidy** datasets, for example to make them more readable, use `tidyr::spread()`. For instance, try to use `spread()` to untidy `socialNetwork_users`.
 
 ```{r}
 #spread() to untidy
-#pass the output inside kable() to render a better looking table
-#plot a line chart mapping the color to each social network name, years to the horizontal axis, and percent to the vertical axis
+
 ```
 
 
