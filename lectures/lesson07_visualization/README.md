@@ -1,124 +1,152 @@
-lesson 5: Data Visualization
+lesson 7: Data Visualization
 ================
 
-Statistical transformation
-==========================
+\#Statistical transformation
 
-So far, we have only used geoms that by default use an `identity` transformation, thus mapping values *as is*. In fact, we could rewrite the charts from the last time as a function of their statistical transformation:
+Functions such as `geom_point` and `geom_col` use by default an
+`identity` transformation, mapping the variables *as is*. Alternatively,
+we can draw the same charts as a function of their statistical
+transformation, adjusting the `geom` attribute:
 
 ``` r
 ggplot() +
   stat_identity(aes(x = Year, y = millions), color = '#4169E1', data =  twitter_users, geom = 'point')
-```
 
-![](README_files/figure-markdown_github/unnamed-chunk-1-1.png)
-
-``` r
 ggplot() +
   stat_identity(aes(x = Year, y = millions), fill = '#4169E1', data =  twitter_users, geom = 'col')
 ```
 
-![](README_files/figure-markdown_github/unnamed-chunk-1-2.png)
-
-However, sometimes you need to transform values before plotting. For instance, check the difference between `freqCasualties` (the one we used with `geom_col`) and `selfiesCasualties`. How are the two datasets different? What do you map to `y` for each of them?
+However, sometimes you need to transform values before plotting. For
+instance, check the difference between `freqCasualties` (the one we used
+with `geom_col`) and `selfiesCasualties`. How are the two datasets
+different? What do you map to `y` for each of them?
 
 ``` r
-#This it the output we are looking for:
+#' We want to replicate the below chart using geom_bar instead 
+#' of geom_col and the dataaset `selfiesCasualties`
 ggplot(data = freqCasualties, aes(x = class, y = n, fill = gender)) + 
   geom_col()
+
+#1. Replicate the above using selfiesCasualties and geom_bar() instead of geom_col. 
+
+ggplot(data = selfiesCasualties) +
+  geom_bar(...)
+
+
+#2. Note that geom_col() is just a wrapper for geom_bar(stat = 'identity') 
+#' Change the default stat to 'identity' and 
+#' replicate the above chart with geom_bar and the dataset `freqCausalties`
+
+ggplot(data = freqCausalties) +
+  geom_bar(...)
+
+
+#3. Read the documentation to learn how to plot proportions 
+#' instead of counts with `geom_bar`
+
+ggplot(data = selfiesCasualties) +
+  geom_bar(aes( ... ), position = 'dodge')
 ```
 
-![](README_files/figure-markdown_github/unnamed-chunk-2-1.png)
+To plot a barchart for `selfiesCasualties`, you need to map y to the
+frequencies for all `class`/`gender` combinations. For a dataset where
+**each row is an observation** (intead of a grouping level) use
+`geom_*(stat = 'count')` to count rows. `geom_*(stat = 'count')` is
+default in `geom_bar()`. You can think of `geom_col` as a special
+instance of `geom_bar(... , stat='identity')`
 
-``` r
-#we want to plot the below chart using selfiesCasualties
-#1. Replicate the above using selfiesCasualties and geom_bar() instead of geom_col. You need to change the default stat  to 'identity'
+## Exercise
 
-#ggplot( data = selfiesCasualties, aes()) +
-#  geom_bar()
-
-#2. Plot proportions instead of counts for both the previous charts
-```
-
-To plot a barchart for `selfiesCasualties`, you need to map y to the frequencies count of each `class` and `gender`. For dataset where **each row is an observation** (versus the count for each grouping level) you can use `geom_*(stat = 'count')`, which is the default for `geom_bar()`. To concude, you can view `geom_col` as a special instance of `geom_bar(... , stat='identity')`
-
-Exercise
---------
-
-In this exercise we are working with a dataset of LSU graduates in May 2017.
+For this exercise, we use a dataset of LSU graduates in May
+2017.
 
 ``` r
 #Load the csv from your local or github. If you use github you need the link to the "raw" file
 dt <- read_csv('https://raw.githubusercontent.com/DarioBoh/ISDS3105_fall18/master/data/graduates_2017may.csv')
-```
-
-    ## Parsed with column specification:
-    ## cols(
-    ##   Sex = col_character(),
-    ##   Ethnicity = col_character(),
-    ##   College = col_character(),
-    ##   Curriculum = col_character()
-    ## )
-
-``` r
 #1. Inspect it using glimpse()
-#2. Use the plot a barchart of the counts of graduates by college. Map the bar fill to gender.
+glimpse(dt)
+
+#2. Plot a barchart of the counts of graduates by college. Map the bar-fill to gender.
 ```
 
-Read the documentation for `?geom_bar` to see how you can map `y = ..propr..` instead of `y = ..count..` to plot the proportions of the students in each college.
+Read the documentation for `computed variables` in `?geom_bar`. Make
+sure you understand the difference between shows `..propr..` and
+`..count..`; plot the proportions (not the counts) of the students in
+each college. You may need to adjust `aes(group = ...)`
 
 ``` r
 #' 3.
-#' ggplot(data  = ..., aes(... , ...)) +
-#' geom_bar()
 ```
 
-Add to the code for question 3 `group = Sex` and `position  = 'dodge'` to plot the distribution of genders across schools:
+Add to the code for question 3 `group = Sex` and switch between
+`position = 'dodge'`/`position = 'fill'` to plot the distribution of
+genders across schools. How do you interpret each bar?
 
 ``` r
-#' switch between position = 'dodge' and position = 'fill' 
-#' to make sure your interpretation of the data is consistent
+#' 4
 ```
 
-Now try to use `may2017graduates`, to map the fill to gender and the number of graduates to the y. Use `..prop..` to transform the number to a proportion. Also, use `position = 'dodge'` to plot m/f proportions bars next to each other.
+\#Faceting
 
-Faceting
-========
-
-Mapping too many variables on the same geom can make your chart hard to comprehend. When you have a categorical variable that you want to control for, facets allow to create a grid of charts of your dataset, where each chart is a level of the variable that you are faceting for. For instance, let's say we want to analyse gender bias controlling for race in each college. Use
+Facets allow to replicate a plot splitting data by a categorical
+variable. For instance, when you have a variable to control for, use
+facets to create a grid of charts of your dataset, where each chart is a
+level of the variable that you are faceting for. For instance, suppose
+you want to understand whether a gender bias exists controlling for race
+in each college:
 
 ``` r
-#ggplot() +
-#  geom_bar() +       #plot a count of students in each college
-#  facet_wrap(~ Ethnicity)
+ggplot(data =dt) +
+ geom_bar(aes(x = College, fill = Sex)) +       #plot a count of students in each
+  facet_wrap(~ Ethnicity, scales = 'free')
 ```
 
 ``` r
 #repeat the previous but facetting by College and mapping ethnicity to x
-# add: labs(title = "New plot title", subtitle = "A subtitle", caption = 'data from www.lsu.edu')
+# add title and caption: labs(title = "New plot title", subtitle = "A subtitle", caption = 'data from www.lsu.edu')
 ```
 
-Changing scales
-===============
+\#Changing scales
 
-You can change the defaults of certain attributes using `scale_attrName_*` functions (e.g., colors). First, note that ggplot has two attributes that we could intuitively call "color", but are in fact two different visual properties of a geom: `color` and `fill`. Some geoms such as `geom_bar` have both, while others such a `geom_line` have only `color`. Now, suppose we want to change the `fill` color in a barchart. Thus we want to change `scale_fill_*`, and because we are setting the new values manually, we select `scale_fill_manual` from the `scale_fill_*` family. To select colors, you can sue rgb, hex or \[color names\]((<http://www.stat.columbia.edu/~tzheng/files/Rcolor.pdf>)
+You can change the defaults of the aesthetics using `scale_attrName_*`
+functions (e.g., colors). For instance, suppose we want to change the
+color palette for categorical variables. First, note that ggplot has two
+attributes that we intuitively may call “color”, yet represent two
+different visual properties of a geom: `color` and `fill`. Some geoms
+such as `geom_bar` have both, while others such a `geom_line` have only
+`color`. Here we want to change the `fill` color in a barchart, thus we
+want to change `scale_fill_*`. Moreover, because we are setting colors
+manually, we select `scale_fill_manual` from the `scale_fill_*` family.
+
+To pick colors, you can sue rgb, hex or \[color
+names\]((<http://www.stat.columbia.edu/~tzheng/files/Rcolor.pdf>)
 
 ``` r
-#ggplot(data = dt) +
-#  geom_bar(aes(College, fill = Sex)) +
-#  scale_fill_manual(values  = replace this with a vector of colors)
-#  OR (ALTERNATIVELY) change the colors usig :     scale_fill_brewer(type = ..., palette = ...)
-# use theme(panel.background = element_blank()) to remove the background color
-# check the documentation for element_text() and use it within theme(axis.text.x = element_text()) to rotate the lables by 45 degrees
+ggplot(data = dt) +
+  geom_bar(aes(College, fill = Sex)) +
+  scale_fill_manual(values  =  ... )
+#  OR (ALTERNATIVELY) change the colors usig :     
+#' scale_fill_brewer(type = ..., palette = ...)
+#' scale_fill_brewer(palette = "Greens", name = 'Gender')
+
+#' Add the below to:
+#' - rotate axis labels 
+#' - delete background
+#' Note that you can save theme() to an object to "create a template"
+  theme(axis.text.x = element_text(angle = 45, hjust = 1), 
+        panel.background = element_blank()
+        )
 ```
 
-You might have noticed that ggplot2 uses default names for the scales of the mapped variables. You can change those defaults by changing the values in `scale_[aes]_[type]`:
+ggplot2 uses default names for the scales of the mapped variables. You
+can change those defaults by changing the values in
+`scale_[aes]_[type]`:
 
 ``` r
-#ggplot(data = dt) +
-#  geom_bar(aes(College, fill = Sex)) 
-#use the below functions to change the x label in 'College Abbreviation'
-#  scale_x_discrete(name = 'College Abbreviations') 
+ggplot(data = dt) +
+  geom_bar(aes(College, fill = Sex))  +
+  scale_x_discrete(name = 'College Abbreviations') 
+
 #use the below function to change the legend title into "gender" the legend values into 'Male' and 'Female'
 #  scale_fill_discrete(name = ... , labels =  ... ) 
 #move the legend to the bottom. To find out how to do that, check the documentation for theme(legend.position)
