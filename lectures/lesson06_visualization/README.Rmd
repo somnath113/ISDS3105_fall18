@@ -65,6 +65,12 @@ Use `freqCasualties` to plot a barchart of the count of casualties by class and 
 
 ```{r}
 #what do we want to map to x and y? how do we map the third variable?
+ggplot(data = freqCasualties,aes(x = class,y = n, fill = gender))+
+  geom_bar(stat="identity") +
+  xlab('Casualty Reason') +
+  ylab('Total Casualty Count') +
+  ggtitle('Barchart of casualties by class and gender')
+
 ```
 
 
@@ -72,7 +78,8 @@ Some times, you want to manually **set** a value for a certain aesthetic, rather
 
 ```{r}
 ggplot() +
-  geom_line(data =  twitter_users, aes(x = Year, y = millions, color ='blue' )) 
+  geom_point(data =  twitter_users, aes(x = Year, y = millions, color ='blue')) 
+  
 ggplot() +
 geom_line(data =  twitter_users, aes(x = Year, y = millions), color ='blue') 
 ```
@@ -84,13 +91,21 @@ So far, we specified aesthetics and datasets inside a specific geom. However, if
 ```{r}
 #1. Use the dataset twitter_users
 #2. map x = Year and y = millions
-#3. pass the aesthetics from 3 to geom_line() and geom_point() 
+#3. pass the aesthetics from 2 to geom_line() and geom_point() 
+ggplot(data = twitter_users, aes(x = Year, y = millions))+
+  geom_line(color = 'red')+
+  geom_point(color = 'blue',shape = 1)
+
 ```
 
 
 ```{r}
 #use twitter_users to plot a linechart of twitter users over time
 #use sn_users to overlay a linechart of FB users over time
+ggplot(data = twitter_users, aes(x = Year, y = millions))+
+  geom_line(color = 'red')+
+  geom_line(data = sn_users,aes(x = year,y = facebook,color = 'facebook'),color = 'blue')
+
 ```
 
 
@@ -99,6 +114,13 @@ So far, we specified aesthetics and datasets inside a specific geom. However, if
 
  - use `beerDt` to create a linechart of beer consumption (in gallons of ethanol) in US from 1903.
  - add a layer of points using `geom_point`
+
+```{r}
+ggplot(data = beerDt, aes(x = Year,y = GallonsCapita)) +
+  geom_line()+
+  geom_point()
+
+```
  
  Suppose that you now want to flag (e.g., use a different color) the observation for consumption in your birthyear. We can do it in two steps:
     
