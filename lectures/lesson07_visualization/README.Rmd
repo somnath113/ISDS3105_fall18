@@ -34,23 +34,25 @@ ggplot(data = freqCasualties, aes(x = class, y = n, fill = gender)) +
 
 #1. Replicate the above using selfiesCasualties and geom_bar() instead of geom_col. 
 
-ggplot(data = selfiesCasualties) +
-  geom_bar(...)
+ggplot(data = selfiesCasualties, aes(x = class,fill = gender)) +
+  geom_bar(stat='count')
 
+ggplot(data = selfiesCasualties, aes(x = class,fill = gender)) +
+  geom_bar() ## Alternate code without mentioning count
 
 #2. Note that geom_col() is just a wrapper for geom_bar(stat = 'identity') 
 #' Change the default stat to 'identity' and 
 #' replicate the above chart with geom_bar and the dataset `freqCausalties`
 
-ggplot(data = freqCausalties) +
-  geom_bar(...)
+ggplot(data = freqCasualties, aes(x = class,y = n, fill = gender)) +
+  geom_bar(stat = 'identity') ## no need to mention count as we already have in column 'n'.use stat identity.
 
 
 #3. Read the documentation to learn how to plot proportions 
 #' instead of counts with `geom_bar`
 
-ggplot(data = selfiesCasualties) +
-  geom_bar(aes( ... ), position = 'dodge')
+ggplot(data = selfiesCasualties, aes(x = class, y = ..prop..,fill = gender,group = gender)) +
+  geom_bar(stat = 'count', position = 'dodge')
 
 ```
 
@@ -68,7 +70,8 @@ dt <- read_csv('https://raw.githubusercontent.com/DarioBoh/ISDS3105_fall18/maste
 glimpse(dt)
 
 #2. Plot a barchart of the counts of graduates by college. Map the bar-fill to gender.
-
+ggplot(data = dt, aes(x = College, fill = Sex)) +
+  geom_bar(stat = 'count')
 
 ```
 
@@ -77,6 +80,11 @@ Read the documentation for `computed variables` in `?geom_bar`. Make sure you un
 
 ```{r}
 #' 3.
+ggplot(data = dt, aes(x = College, y = ..prop..,fill = Sex, group = Sex)) +
+  geom_bar(stat = 'count',position = 'dodge')
+##Alternate
+ggplot(data = dt, aes(x = College, y = ..prop..,fill = Sex, group = Sex)) +
+  geom_bar(stat = 'count')
 
 ```
 
@@ -105,6 +113,11 @@ ggplot(data =dt) +
 #repeat the previous but facetting by College and mapping ethnicity to x
 # add title and caption: labs(title = "New plot title", subtitle = "A subtitle", caption = 'data from www.lsu.edu')
 
+
+ggplot(data =dt) +
+ geom_bar(aes(x = Ethnicity, fill = Sex)) +       #plot a count of students in each
+  facet_wrap(~ College, scales = 'free_x') # we have a fixed y here.
+
 ```
 
 
@@ -119,9 +132,9 @@ To pick colors, you can sue rgb, hex or [color names]((http://www.stat.columbia.
 ```{r}
 ggplot(data = dt) +
   geom_bar(aes(College, fill = Sex)) +
-  scale_fill_manual(values  =  ... )
+#  scale_fill_manual(values  = c('purple','gold') )
 #  OR (ALTERNATIVELY) change the colors usig :     
-#' scale_fill_brewer(type = ..., palette = ...)
+  scale_fill_brewer(palette = 'BrBG') +
 #' scale_fill_brewer(palette = "Greens", name = 'Gender')
 
 #' Add the below to:
@@ -138,7 +151,7 @@ ggplot2 uses default names for the scales of the mapped variables. You can chang
 ```{r}
 ggplot(data = dt) +
   geom_bar(aes(College, fill = Sex))  +
-  scale_x_discrete(name = 'College Abbreviations') 
+  scale_x_discrete(name = 'College Abbreviations',position = 'bottom',labels = c(F = 'Female' ,M = 'Male'  )) 
 
 #use the below function to change the legend title into "gender" the legend values into 'Male' and 'Female'
 #  scale_fill_discrete(name = ... , labels =  ... ) 
